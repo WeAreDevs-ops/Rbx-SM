@@ -5,9 +5,11 @@ export default function Home() {
     <div className="container">
       <h1>Welcome to Rbx Market</h1>
       <p>
-        Your one-stop Roblox account marketplace. Browse listings, contact sellers, and manage your account all in one place.
+        Discover and buy premium Roblox accounts securely and easily. Browse our extensive listings, connect with trusted sellers, and find your perfect account today.
       </p>
-      <button>Browse Listings</button>
+      <button onClick={() => window.location.href = '/listings'}>
+        Browse Listings
+      </button>
     </div>
   );
 }
