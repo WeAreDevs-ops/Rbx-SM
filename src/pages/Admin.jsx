@@ -15,9 +15,27 @@ export default function Admin() {
     profileLink: ''
   });
 
-  const checkLogin = () => {
-    if (password === 'rbxadmin') setAccess(true);
-    else alert('Wrong password!');
+  // 🔒 Use backend API to verify password
+  const checkLogin = async () => {
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setAccess(true);
+        // Optionally store token: localStorage.setItem('token', data.token)
+      } else {
+        alert(data.error || 'Invalid password');
+      }
+    } catch (err) {
+      alert('Server error while verifying password.');
+      console.error(err);
+    }
   };
 
   const handleInputChange = (e) => {
@@ -127,4 +145,4 @@ export default function Admin() {
       )}
     </div>
   );
-          }
+      }
