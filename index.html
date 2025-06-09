@@ -1,82 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <title>RBX Admin Panel</title>
-  <script type="module">
-    // Import Firebase libraries from CDN
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    // Your Firebase config (already shared earlier)
-    const firebaseConfig = {
-      apiKey: "AIzaSyDCfx4m9yrc6CaEU83q_AbG_RG4agOvje4",
-      authDomain: "rbx-sm-db.firebaseapp.com",
-      projectId: "rbx-sm-db",
-      storageBucket: "rbx-sm-db.appspot.com",
-      messagingSenderId: "626499721050",
-      appId: "1:626499721050:web:237fd4bf9cb9abd4228563",
-      measurementId: "G-M878D082KB"
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    // Add new account
-    window.addAccount = async function () {
-      const title = document.getElementById("title").value;
-      const robux = document.getElementById("robux").value;
-      const price = document.getElementById("price").value;
-      const image = document.getElementById("image").value;
-
-      if (!title || !robux || !price || !image) return alert("Fill all fields!");
-
-      await addDoc(collection(db, "accounts"), {
-        title,
-        robux,
-        price,
-        image
-      });
-
-      alert("✅ Account added!");
-      loadAccounts();
-    };
-
-    // Load accounts
-    window.loadAccounts = async function () {
-      const querySnapshot = await getDocs(collection(db, "accounts"));
-      const listings = document.getElementById("listings");
-      listings.innerHTML = "";
-
-      querySnapshot.forEach(doc => {
-        const acc = doc.data();
-        listings.innerHTML += `
-          <div style="border:1px solid #ccc; padding:10px; margin:10px; border-radius:8px;">
-            <img src="${acc.image}" style="width:100px;height:100px;object-fit:cover;" />
-            <h3>${acc.title}</h3>
-            <p>💰 ${acc.robux} Robux — $${acc.price}</p>
-          </div>
-        `;
-      });
-    };
-
-    window.onload = loadAccounts;
-  </script>
-</head>
-<body style="font-family:sans-serif; background:#f9fafb; padding:20px;">
-  <h2>🛠️ Admin Panel</h2>
-
-  <div style="margin-bottom:20px;">
-    <input id="title" placeholder="Title" />
-    <input id="robux" placeholder="Robux" />
-    <input id="price" placeholder="Price" />
-    <input id="image" placeholder="Image URL" />
-    <button onclick="addAccount()">Add Account</button>
-  </div>
-
-  <hr/>
-
-  <h3>📋 Account Listings</h3>
-  <div id="listings"></div>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>RBX Market</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
