@@ -6,46 +6,41 @@ export default function Listings() {
   const [accounts, setAccounts] = useState([]);
 
   useEffect(() => {
-    async function fetchAccounts() {
-      try {
-        const accountsCollection = collection(db, 'accounts');
-        const accountsSnapshot = await getDocs(accountsCollection);
-        const accountsList = accountsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAccounts(accountsList);
-      } catch (error) {
-        console.error('Error fetching accounts:', error);
-      }
-    }
+    const loadAccounts = async () => {
+      const querySnapshot = await getDocs(collection(db, 'accounts'));
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAccounts(data);
+    };
 
-    fetchAccounts();
+    loadAccounts();
   }, []);
 
-  if (accounts.length === 0) {
-    return <p className="p-4 text-center text-gray-500">No accounts found.</p>;
-  }
+  const getUserIdFromProfile = (url) => {
+    const match = url.match(/users\/(\d+)\//);
+    return match ? match[1] : null;
+  };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6 text-center">Available Accounts</h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {accounts.map(account => (
-          <div
-            key={account.id}
-            className="bg-white border border-gray-300 rounded-xl shadow-sm hover:shadow-lg transition-all duration-200"
-          >
+    <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      {accounts.map(account => {
+        const userId = getUserIdFromProfile(account.profile);
+        const avatar = userId
+          ? `https://www.roblox.com/headshot-thumbnail/image?userId=${userId}&width=150&height=150&format=png`
+          : 'https://tr.rbxcdn.com/58631b8f7dfb99a6f6f3f88e37bdbaba/150/150/AvatarHeadshot/Png';
+
+        return (
+          <div key={account.id} className="border rounded-lg shadow-md p-4 bg-white hover:shadow-lg transition">
             <img
-              src={account.image}
-              alt={account.title}
-              className="w-full h-40 object-cover rounded-t-xl"
+              src={avatar}
+              alt="Avatar"
+              className="w-full h-40 object-cover rounded mb-3"
             />
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-1">{account.title}</h3>
-              <p className="text-gray-700">{account.robux} Robux</p>
-              <p className="text-green-600 font-bold">${account.price}</p>
-            </div>
+            <h3 className="text-lg font-semibold">{account.title}</h3>
+            <p className="text-sm text-gray-600">{account.robux} Robux</p>
+            <p className="text-green-600 font-bold">${account.price}</p>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }
