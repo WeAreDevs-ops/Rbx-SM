@@ -1,11 +1,22 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,jsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        gold: '#fbbf24',
+        'text-light': '#e0e0e0',
+        'text-muted': '#ccc',
+      },
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+      },
+      borderRadius: {
+        lg: '12px',
+      },
+    },
   },
   plugins: [],
-};
+}
