@@ -8,14 +8,14 @@ export default function Listings() {
   useEffect(() => {
     async function fetchAccounts() {
       try {
-        const accountsCollection = collection(db, 'accounts');
-        const accountsSnapshot = await getDocs(accountsCollection);
-        const accountsList = accountsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setAccounts(accountsList);
-      } catch (error) {
-        console.error('Error fetching accounts:', error);
+        const snapshot = await getDocs(collection(db, 'accounts'));
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        setAccounts(data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
       }
     }
+
     fetchAccounts();
   }, []);
 
