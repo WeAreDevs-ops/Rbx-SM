@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../firebase';
 import {
-  collection, addDoc, getDocs
+  collection, addDoc, getDocs, deleteDoc, doc
 } from 'firebase/firestore';
 
 export default function Admin() {
@@ -44,6 +44,20 @@ export default function Admin() {
     const querySnapshot = await getDocs(collection(db, 'accounts'));
     const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setAccounts(data);
+  };
+
+  const deleteAccount = async (id) => {
+    const confirm = window.confirm('Are you sure you want to delete this account?');
+    if (!confirm) return;
+
+    try {
+      await deleteDoc(doc(db, 'accounts', id));
+      setAccounts(accounts.filter(account => account.id !== id));
+      alert('✅ Account deleted!');
+    } catch (error) {
+      console.error('Error deleting account:', error);
+      alert('❌ Failed to delete account.');
+    }
   };
 
   useEffect(() => {
@@ -100,8 +114,14 @@ export default function Admin() {
           <h3 className="text-xl font-semibold">Current Accounts</h3>
           <ul className="mt-2">
             {accounts.map(account => (
-              <li key={account.id} className="border p-2 rounded mb-2">
-                {account.title} - {account.robux} Robux - ${account.price}
+              <li key={account.id} className="border p-2 rounded mb-2 flex justify-between items-center">
+                <span>{account.title} - {account.robux} Robux - ${account.price}</span>
+                <button
+                  onClick={() => deleteAccount(account.id)}
+                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
               </li>
             ))}
           </ul>
@@ -109,4 +129,4 @@ export default function Admin() {
       )}
     </div>
   );
-          }
+            }
