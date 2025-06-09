@@ -1,22 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { initializeApp } from 'firebase/app';
+import { db } from '../firebase';
 import {
-  getFirestore, collection, addDoc, getDocs
+  collection, addDoc, getDocs
 } from 'firebase/firestore';
-
-// ✅ Firebase Config (Use your actual config)
-const firebaseConfig = {
-  apiKey: "AIzaSyDCfx4m9yrc6CaEU83q_AbG_RG4agOvje4",
-  authDomain: "rbx-sm-db.firebaseapp.com",
-  projectId: "rbx-sm-db",
-  storageBucket: "rbx-sm-db.appspot.com",
-  messagingSenderId: "626499721050",
-  appId: "1:626499721050:web:237fd4bf9cb9abd4228563",
-  measurementId: "G-M878D082KB"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 export default function Admin() {
   const [access, setAccess] = useState(false);
@@ -123,4 +109,4 @@ export default function Admin() {
       )}
     </div>
   );
-}
+          }
