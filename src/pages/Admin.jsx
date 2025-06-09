@@ -12,7 +12,7 @@ export default function Admin() {
     title: '',
     robux: '',
     price: '',
-    image: ''
+    profile: ''
   });
 
   const checkLogin = () => {
@@ -25,18 +25,19 @@ export default function Admin() {
   };
 
   const addAccount = async () => {
-    if (!newAccount.title || !newAccount.robux || !newAccount.price || !newAccount.image) {
+    const { title, robux, price, profile } = newAccount;
+    if (!title || !robux || !price || !profile) {
       return alert('Please fill out all fields.');
     }
 
     await addDoc(collection(db, 'accounts'), {
       ...newAccount,
-      robux: Number(newAccount.robux),
-      price: Number(newAccount.price)
+      robux: Number(robux),
+      price: Number(price)
     });
 
     alert('✅ Account added!');
-    setNewAccount({ title: '', robux: '', price: '', image: '' });
+    setNewAccount({ title: '', robux: '', price: '', profile: '' });
     loadAccounts();
   };
 
@@ -47,17 +48,9 @@ export default function Admin() {
   };
 
   const deleteAccount = async (id) => {
-    const confirm = window.confirm('Are you sure you want to delete this account?');
-    if (!confirm) return;
-
-    try {
-      await deleteDoc(doc(db, 'accounts', id));
-      setAccounts(accounts.filter(account => account.id !== id));
-      alert('✅ Account deleted!');
-    } catch (error) {
-      console.error('Error deleting account:', error);
-      alert('❌ Failed to delete account.');
-    }
+    if (!window.confirm('Are you sure you want to delete this account?')) return;
+    await deleteDoc(doc(db, 'accounts', id));
+    loadAccounts();
   };
 
   useEffect(() => {
@@ -65,7 +58,7 @@ export default function Admin() {
   }, [access]);
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
+    <div className="p-4 max-w-xl mx-auto">
       {!access ? (
         <>
           <h2 className="text-xl font-bold mb-2">Admin Panel</h2>
@@ -81,44 +74,20 @@ export default function Admin() {
       ) : (
         <>
           <h2 className="text-2xl font-bold mb-4">Add New Roblox Account</h2>
-          <input
-            name="title"
-            placeholder="Account Title"
-            value={newAccount.title}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full mb-2"
-          />
-          <input
-            name="robux"
-            placeholder="Robux Amount"
-            value={newAccount.robux}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full mb-2"
-          />
-          <input
-            name="price"
-            placeholder="Price ($)"
-            value={newAccount.price}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full mb-2"
-          />
-          <input
-            name="image"
-            placeholder="Image URL"
-            value={newAccount.image}
-            onChange={handleInputChange}
-            className="border p-2 rounded w-full mb-2"
-          />
+          <input name="title" placeholder="Account Title" value={newAccount.title} onChange={handleInputChange} className="border p-2 rounded w-full mb-2" />
+          <input name="robux" placeholder="Robux Amount" value={newAccount.robux} onChange={handleInputChange} className="border p-2 rounded w-full mb-2" />
+          <input name="price" placeholder="Price ($)" value={newAccount.price} onChange={handleInputChange} className="border p-2 rounded w-full mb-2" />
+          <input name="profile" placeholder="Roblox Profile Link" value={newAccount.profile} onChange={handleInputChange} className="border p-2 rounded w-full mb-2" />
           <button onClick={addAccount} className="bg-green-600 text-white px-4 py-2 rounded w-full mb-4">Add Account</button>
 
-          <h3 className="text-xl font-semibold">Current Accounts</h3>
-          <ul className="mt-2">
+          <h3 className="text-xl font-semibold mb-2">Current Listings</h3>
+          <ul className="space-y-2">
             {accounts.map(account => (
-              <li key={account.id} className="border p-2 rounded mb-2 flex justify-between items-center">
+              <li key={account.id} className="border p-3 rounded flex justify-between items-center bg-white shadow">
                 <span>{account.title} - {account.robux} Robux - ${account.price}</span>
                 <button
                   onClick={() => deleteAccount(account.id)}
-                  className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                  className="ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                 >
                   Delete
                 </button>
@@ -129,4 +98,4 @@ export default function Admin() {
       )}
     </div>
   );
-            }
+}
