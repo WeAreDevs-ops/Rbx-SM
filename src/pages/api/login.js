@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   }
 
   const { password } = req.body;
-  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD; // Use env variable
+  const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
   if (!password) {
     return res.status(400).json({ error: 'Missing password' });
