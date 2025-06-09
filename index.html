@@ -1,69 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rbx Market</title>
-<script type="module">
-// Import Firebase modules from CDN
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDCfx4m9yrc6CaEU83q_AbG_RG4agOvje4",
-  authDomain: "rbx-sm-db.firebaseapp.com",
-  projectId: "rbx-sm-db",
-  storageBucket: "rbx-sm-db.appspot.com",
-  messagingSenderId: "626499721050",
-  appId: "1:626499721050:web:237fd4bf9cb9abd4228563",
-  measurementId: "G-M878D082KB"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const accountsCollection = collection(db, "accounts");
-
-// Function to fetch and display accounts
-async function loadAccounts() {
-  const snapshot = await getDocs(accountsCollection);
-  const list = document.getElementById("accountsList");
-  list.innerHTML = "";
-  snapshot.forEach(doc => {
-    const acc = doc.data();
-    const li = document.createElement("li");
-    li.textContent = `${acc.title} - ${acc.robux} Robux - $${acc.price}`;
-    list.appendChild(li);
-  });
-}
-
-// Function to add a new account
-async function addAccount(event) {
-  event.preventDefault();
-  const title = document.getElementById("title").value;
-  const robux = document.getElementById("robux").value;
-  const price = document.getElementById("price").value;
-  await addDoc(accountsCollection, { title, robux: Number(robux), price: Number(price) });
-  alert("Account added!");
-  event.target.reset();
-  loadAccounts();
-}
-
-window.addEventListener("load", () => {
-  loadAccounts();
-  document.getElementById("addAccountForm").addEventListener("submit", addAccount);
-});
-</script>
-</head>
-<body>
-  <h1>Roblox Accounts Listings</h1>
-  <ul id="accountsList"></ul>
-
-  <h2>Add New Account (Admin)</h2>
-  <form id="addAccountForm">
-    <input type="text" id="title" placeholder="Title" required />
-    <input type="number" id="robux" placeholder="Robux" required />
-    <input type="number" id="price" placeholder="Price ($)" required />
-    <button type="submit">Add Account</button>
-  </form>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>RBX Market</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>
