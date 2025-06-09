@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   const { password } = req.body;
 
   // Change your admin password here
-  const ADMIN_PASSWORD = 'rbxadmin';
+  const ADMIN_PASSWORD = 'Gooners';
 
   if (!password) {
     return res.status(400).json({ error: 'Missing password' });
