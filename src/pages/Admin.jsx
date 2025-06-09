@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../firebase';
-import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
 export default function Admin() {
   const [access, setAccess] = useState(false);
@@ -15,7 +13,7 @@ export default function Admin() {
     profileLink: ''
   });
 
-  // 🔒 Use backend API to verify password
+  // ✅ Check admin password via API
   const checkLogin = async () => {
     try {
       const res = await fetch('/api/login', {
@@ -23,18 +21,15 @@ export default function Admin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       });
-
       const data = await res.json();
-
-      if (res.ok) {
+      if (res.ok && data.success) {
         setAccess(true);
-        // Optionally store token: localStorage.setItem('token', data.token)
+        loadAccounts();
       } else {
-        alert(data.error || 'Invalid password');
+        alert(data.error || 'Wrong password!');
       }
     } catch (err) {
       alert('Server error while verifying password.');
-      console.error(err);
     }
   };
 
@@ -43,39 +38,57 @@ export default function Admin() {
     setNewAccount(prev => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Fetch all accounts from backend
   const loadAccounts = async () => {
-    const snapshot = await getDocs(collection(db, 'accounts'));
-    setAccounts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    const res = await fetch('/api/accounts');
+    const data = await res.json();
+    if (res.ok) setAccounts(data.accounts || []);
   };
 
+  // ✅ Add new account via backend
   const addAccount = async () => {
     const { username, age, emailStatus, negotiable, price, profileLink } = newAccount;
     if (!username || !age || !emailStatus || !negotiable || !price || !profileLink) {
       return alert('Please fill out all fields.');
     }
-    await addDoc(collection(db, 'accounts'), {
-      username,
-      age,
-      emailStatus,
-      negotiable,
-      price: Number(price),
-      profileLink
+    const res = await fetch('/api/accounts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username,
+        age,
+        emailStatus,
+        negotiable,
+        price,
+        profileLink
+      }),
     });
-    alert('✅ Account added!');
-    setNewAccount({ username: '', age: '', emailStatus: '', negotiable: 'No', price: '', profileLink: '' });
-    loadAccounts();
-  };
 
-  const deleteAccount = async (id) => {
-    if (window.confirm('Are you sure?')) {
-      await deleteDoc(doc(db, 'accounts', id));
+    if (res.ok) {
+      alert('✅ Account added!');
+      setNewAccount({ username: '', age: '', emailStatus: '', negotiable: 'No', price: '', profileLink: '' });
       loadAccounts();
+    } else {
+      alert('Failed to add account.');
     }
   };
 
-  useEffect(() => {
-    if (access) loadAccounts();
-  }, [access]);
+  // ✅ Delete account via backend
+  const deleteAccount = async (id) => {
+    if (!window.confirm('Are you sure?')) return;
+
+    const res = await fetch('/api/accounts', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+
+    if (res.ok) {
+      loadAccounts();
+    } else {
+      alert('Failed to delete account.');
+    }
+  };
 
   return (
     <div className="p-4 max-w-lg mx-auto">
@@ -95,12 +108,12 @@ export default function Admin() {
         <>
           <h2 className="text-2xl font-bold mb-4">Add New Account</h2>
 
-          {['username','age','emailStatus','price','profileLink'].map(field => (
+          {['username', 'age', 'emailStatus', 'price', 'profileLink'].map(field => (
             <input
               key={field}
               name={field}
               type="text"
-              placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace('Status',' Status')}
+              placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace('Status', ' Status')}
               value={newAccount[field]}
               onChange={handleInputChange}
               className="border p-2 rounded w-full mb-2"
@@ -130,7 +143,7 @@ export default function Admin() {
               >
                 <div>
                   <strong>{acc.username}</strong> — {acc.age} — {acc.emailStatus} — 
-                  Negotiable: {acc.negotiable} — ${acc.price}
+                  Negotiable: {acc.negotiable} — ${acc.price} — <a href={acc.profileLink} className="underline" target="_blank">Profile</a>
                 </div>
                 <button
                   onClick={() => deleteAccount(acc.id)}
@@ -145,4 +158,4 @@ export default function Admin() {
       )}
     </div>
   );
-      }
+}
