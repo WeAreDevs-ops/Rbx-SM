@@ -1,8 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { db } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import accounts from '../data/accounts.json';
 
 export default function Listings() {
+  const [accounts, setAccounts] = useState([]);
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      const querySnapshot = await getDocs(collection(db, "accounts"));
+      const data = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAccounts(data);
+    };
+    fetchAccounts();
+  }, []);
+
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Available Accounts</h2>
