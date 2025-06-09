@@ -44,26 +44,29 @@ const handleBuyClick = () => {
 
 export default function RolimonsStyleListing() {
   return (
-    <div className="min-h-screen bg-gray-900 p-10">
-      <h1 className="text-white text-4xl font-bold mb-8 text-center">Roblox Accounts for Sale</h1>
+    <div className="min-h-screen bg-gradient-to-tr from-gray-900 via-gray-800 to-gray-900 p-10">
+      <h1 className="text-white text-4xl font-bold mb-12 text-center tracking-wide">
+        Roblox Accounts for Sale
+      </h1>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
         {accounts.map((acc, i) => (
           <div
             key={i}
-            className="bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer p-6 flex flex-col"
+            className="bg-white bg-opacity-10 backdrop-blur-md rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer p-6 flex flex-col"
           >
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-white font-semibold text-xl truncate">{acc.username}</h2>
-              <span className="bg-yellow-400 text-gray-900 font-bold px-3 py-1 rounded-full text-sm">
+              <span className="bg-yellow-400 text-gray-900 font-bold px-4 py-1 rounded-full text-sm">
                 ${acc.price}
               </span>
             </div>
 
-            <p className="text-gray-300 text-sm mb-2 truncate" title={acc.description}>
+            <p className="text-gray-300 text-sm mb-3 truncate" title={acc.description}>
               {acc.description}
             </p>
 
-            <div className="flex gap-3 text-sm text-gray-400 mb-3">
+            <div className="flex gap-4 text-sm text-gray-300 mb-4">
               <span>
                 Robux: <span className="text-white">{acc.robux.toLocaleString()}</span>
               </span>
@@ -82,7 +85,7 @@ export default function RolimonsStyleListing() {
               href={acc.robloxLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-indigo-400 hover:text-indigo-600 font-medium mb-5"
+              className="text-indigo-400 hover:text-indigo-600 font-medium mb-6"
             >
               View Roblox Profile
             </a>
